@@ -10,6 +10,13 @@ include Facebook::Messenger
 bot_sessions = {}
 # last_seq = -1
 
+response_texts = [
+    'Your message was sent 📢',
+    'Your message is on its way to a speaker somewhere 🔊',
+    "Cool! This is one of the best messages ever and I don't say that to everybody",
+    'Did anyone ever tell you that you have a really sexy voice? 💃'
+]
+
 Bot.on :message do |message|
   # if message.seq <= last_seq
   #   return
@@ -35,6 +42,8 @@ Bot.on :message do |message|
     bot_sessions.delete(message.sender['id'])
 
   elsif message.try(:attachments).try(:[], 0).try(:[], 'payload')
+
+
     url = message.attachments[0]['payload']['url']
     response = AppServerClient.new.play_url(url)
     if response.code == 200 && response.parsed_response.starts_with?('playing')
@@ -45,9 +54,9 @@ Bot.on :message do |message|
                   type: 'template',
                   payload: {
                       template_type: 'button',
-                      text: 'Your message was sent 📢',
+                      text: response_texts.sample,
                       buttons: [
-                          {type: 'postback', title: 'Save', payload: {action: 'SAVE_CLIP', url: url}.to_json}
+                          {type: 'postback', title: 'Save clip', payload: {action: 'SAVE_CLIP', url: url}.to_json}
                       ]
                   }
               }
@@ -61,7 +70,7 @@ Bot.on :message do |message|
       Bot.deliver(
           recipient: message.sender,
           message: {
-              text: 'Your message was sent 📢'
+              text: response_texts.sample
           }
       )
     end
@@ -76,7 +85,7 @@ Bot.on :postback do |postback|
     Bot.deliver(
        recipient: postback.sender,
        message: {
-           text: 'Please enter a title for the clip.'
+           text: 'Please enter a title for the clip'
        }
     )
   end

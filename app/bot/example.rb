@@ -1,7 +1,7 @@
 require 'facebook/messenger'
 
 Facebook::Messenger.configure do |config|
-  config.access_token = 'EAALrnpYIsfYBAE5uNGBCFKNKSCMbqwNjs4bXZBl7ZBIOc0wyer3n51cQP6VHvOK1ANAcq4VZCWk7sU8xIOPeUsPpcsZC5oEfvycErguVZBMUI5Ep6lP8mKZAApYA8KNvqtBAFanHeDhgG96exT2gaBqgvZCrnFZB5IvoYfCGweC5uQZDZD'
+  config.access_token = 'EAALrnpYIsfYBABTgci00sInHqxB4KYbqCKwVM3546iEBnITSQFHZCXOYpuqfmGfg8IPC05Ph57DEuQJUbUXjQ47TLWK04pDponL1oYczZAGlowktjUiA8zYdUfMsoNsQH3Lwwq6oVs8p9cuiORwJEpMVBnxBHluKVgVdMtBAZDZD'
   config.verify_token = 'my_voice_is_my_password_verify_me'
 end
 

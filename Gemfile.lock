@@ -160,6 +160,7 @@ DEPENDENCIES
   byebug
   coffee-rails (~> 4.1.0)
   facebook-messenger (~> 0.6.0)
+  httparty (~> 0.13.7)
   jbuilder (~> 2.0)
   jquery-rails
   rails (= 4.2.5.1)

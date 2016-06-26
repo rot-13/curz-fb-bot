@@ -23,4 +23,5 @@ group :development do
 end
 
 gem 'facebook-messenger', '~> 0.6.0'
+gem 'httparty', '~> 0.13.7'
 

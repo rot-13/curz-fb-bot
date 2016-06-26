@@ -27,7 +27,7 @@ Bot.on :message do |message|
       Bot.deliver(
           recipient: message.sender,
           message: {
-              text: "Saved video with title #{bot_session[:title]}"
+              text: "Yay! Saved your clip.\nSend \"#{bot_session[:title]}\" to replay it."
           }
       )
     end
@@ -45,7 +45,7 @@ Bot.on :message do |message|
                   type: 'template',
                   payload: {
                       template_type: 'button',
-                      text: 'Do you like to save it?',
+                      text: 'Your message was sent 📢',
                       buttons: [
                           {type: 'postback', title: 'Save', payload: {action: 'SAVE_CLIP', url: url}.to_json}
                       ]
@@ -61,7 +61,7 @@ Bot.on :message do |message|
       Bot.deliver(
           recipient: message.sender,
           message: {
-              text: "Played text"
+              text: 'Your message was sent 📢'
           }
       )
     end
@@ -69,8 +69,6 @@ Bot.on :message do |message|
 end
 
 Bot.on :postback do |postback|
-  # puts "Received postback from #{postback.sender} with seq no. #{postback.seq}"
-
   payload = JSON.parse(postback.payload)
 
   if payload['action'] == 'SAVE_CLIP'
@@ -78,7 +76,7 @@ Bot.on :postback do |postback|
     Bot.deliver(
        recipient: postback.sender,
        message: {
-           text: 'Please enter a title for the clip'
+           text: 'Please enter a title for the clip.'
        }
     )
   end

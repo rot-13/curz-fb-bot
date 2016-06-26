@@ -10,10 +10,6 @@ include Facebook::Messenger
 bot_sessions = {}
 
 Bot.on :message do |message|
-  if message.empty?
-    return
-  end
-  
   puts "Received #{message.text} from #{message.sender}"
 
   bot_session = bot_sessions[message.sender['id']]

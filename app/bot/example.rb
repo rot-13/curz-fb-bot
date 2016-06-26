@@ -12,7 +12,10 @@ Bot.on :message do |message|
 
   # message.attachments[0]["payload"]["url"]
 
-
+  if message.try(:attachments).try(:[], 0).try(:[], 'payload')
+    url = message.attachments[0]['payload']['url']
+    AppServerClient.new.play_url(url)
+  end
 
   Bot.deliver(
       recipient: message.sender,

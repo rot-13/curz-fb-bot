@@ -1,37 +1,40 @@
 require 'facebook/messenger'
 
 Facebook::Messenger.configure do |config|
-  config.access_token = 'EAALrnpYIsfYBAE2ZBeJUh4MZBcLr8R8rxX7kvWif1eKNp4zYq0bwWJbjWDbOC7qbn3P1Q9CBrZAkBWLIXjBtqWBrPuBBDOl7l97gqQvHmkOcPEzCXAkAmf1uBrMvhwOqhMVGTN6vR3cqjlaZBPMQ6lbaB7DF71gX9t8CUzzVrwZDZD'
+  config.access_token = 'EAALrnpYIsfYBAHmhYJc4nyUQxhcJ48iugwVOtJeRYna9aLTZC3wgbMWSMuZBRSoRCoO8KlKorWdJ66aEy7ZCIe1ZBZAG9PLYeX5ioMOjR1fTiEA26RiVf5iQGYWdKTDWeZBNFytCV3lFsp7j3GYpsAlitf4cQCp4phLuoC8g27FAZDZD'
   config.verify_token = 'my_voice_is_my_password_verify_me'
 end
 
 include Facebook::Messenger
 
 bot_sessions = {}
+# last_seq = -1
 
 Bot.on :message do |message|
-  puts "Received #{message.text} from #{message.sender}"
+  # if message.seq <= last_seq
+  #   return
+  # end
 
-  puts message.inspect
+  puts "Received #{message.text} from #{message.sender} with seq no. #{message.seq}"
 
   bot_session = bot_sessions[message.sender['id']]
   if bot_session.try(:[], :state) == 'save_video_flow'
     bot_session[:title] = message.text
 
-    # TODO: Save clip using AppServerClient
+    response = AppServerClient.new.save_url(bot_session[:title], bot_session[:url])
 
-    Bot.deliver(
-      recipient: message.sender,
-      message: {
-        text: "Saved video with title #{bot_session[:title]}"
-      }
-    )
+    if response.code == 200
+      Bot.deliver(
+          recipient: message.sender,
+          message: {
+              text: "Saved video with title #{bot_session[:title]}"
+          }
+      )
+    end
 
-    hash.delete(message.sender['id'])
-    return
-  end
+    bot_sessions.delete(message.sender['id'])
 
-  if message.try(:attachments).try(:[], 0).try(:[], 'payload')
+  elsif message.try(:attachments).try(:[], 0).try(:[], 'payload')
     url = message.attachments[0]['payload']['url']
     response = AppServerClient.new.play_url(url)
     if response.code == 200 && response.parsed_response.starts_with?('playing')
@@ -51,11 +54,23 @@ Bot.on :message do |message|
           }
       )
     end
+  else
+    text = message.text
+    response = AppServerClient.new.play_text(text)
+    if response.code == 200
+      Bot.deliver(
+          recipient: message.sender,
+          message: {
+              text: "Played text"
+          }
+      )
+    end
   end
-
 end
 
 Bot.on :postback do |postback|
+  # puts "Received postback from #{postback.sender} with seq no. #{postback.seq}"
+
   payload = JSON.parse(postback.payload)
 
   if payload['action'] == 'SAVE_CLIP'
@@ -70,6 +85,8 @@ Bot.on :postback do |postback|
 end
 
 Bot.on :delivery do |delivery|
+  puts "Received delivery with seq no. #{delivery.seq}"
+
   puts "Delivered message(s) #{delivery.ids}"
 end
 

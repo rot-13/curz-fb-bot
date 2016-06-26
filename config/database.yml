@@ -13,7 +13,7 @@ default: &default
 development:
   <<: *default
   host: localhost
-  database: curz_dev
+  database: curz_fb_dev
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -21,8 +21,8 @@ development:
 test:
   <<: *default
   host: localhost
-  database: curz_test
+  database: curz_fb_test
 
 production:
   <<: *default
-  database: curz_prod
+  database: curz_fb_prod

@@ -12,6 +12,8 @@ bot_sessions = {}
 Bot.on :message do |message|
   puts "Received #{message.text} from #{message.sender}"
 
+  puts message.inspect
+
   bot_session = bot_sessions[message.sender['id']]
   if bot_session.try(:[], :state) == 'save_video_flow'
     bot_session[:title] = message.text
